@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b18">
+  <title>67° Sensor Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glow glow-one"></div><div class="glow glow-two"></div>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="#"><span class="brand-icon">6<span>7</span></span><span> SENSOR LAB <small>ESP32 • LIVE DATA</small></span></a>
+      <div class="live-pill"><i></i><span id="connection-label">CONNECTING</span></div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THE INTERNET OF THINGS, BUT MAKE IT 67</p>
+        <h1>THE ROOM IS<br><span class="gradient-text">GIVING 67.</span></h1>
+        <p class="subtitle">Tiny ESP32. Big sensor energy. Real temperature and humidity, straight from the room.</p>
+        <div class="hero-tags"><span>ESP32 WROOM-32</span><span>WI-FI</span><span>SUPABASE CLOUD</span></div>
+      </div>
+      <div class="mascot-card" aria-label="67 meme graphic">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="big-67">6<span>7</span></div>
+        <div class="meme-caption">SIX SEVEN<br><b>WE ARE SO BACK</b></div>
+        <div class="spark spark-a">✳</div><div class="spark spark-b">✦</div>
+      </div>
+    </section>
+
+    <section class="section-heading">
+      <div><p class="eyebrow">LIVE FROM YOUR ESP32</p><h2>Room status <span>right now</span></h2></div>
+      <div class="updated">LAST UPDATE <strong id="last-updated">WAITING…</strong></div>
+    </section>
+
+    <section class="metrics">
+      <article class="metric-card temperature">
+        <div class="metric-top"><span class="metric-icon">🌡️</span><span class="metric-label">TEMPERATURE</span><span class="metric-live">LIVE</span></div>
+        <div class="metric-value"><span id="temperature">--.-</span><small>°C</small></div>
+        <p id="temperature-note">Waiting for the first reading</p>
+        <div class="meter"><span id="temperature-meter"></span></div>
+      </article>
+      <article class="metric-card humidity">
+        <div class="metric-top"><span class="metric-icon">💧</span><span class="metric-label">HUMIDITY</span><span class="metric-live">LIVE</span></div>
+        <div class="metric-value"><span id="humidity">--</span><small>%</small></div>
+        <p id="humidity-note">Waiting for the first reading</p>
+        <div class="meter"><span id="humidity-meter"></span></div>
+      </article>
+    </section>
+
+    <section class="lower-grid">
+      <article class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">THE LATEST TRANSMISSION</p><h3>Sensor feed</h3></div><span class="feed-dot"></span></div>
+        <div id="feed-message" class="feed-message">Waiting for Supabase data…</div>
+        <div class="feed-row"><span>DEVICE</span><strong>ESP32 WROOM-32</strong></div>
+        <div class="feed-row"><span>DATABASE TABLE</span><strong>sensor_data</strong></div>
+        <div class="feed-row"><span>REFRESH RATE</span><strong>5 SECONDS</strong></div>
+      </article>
+      <article class="meme-panel">
+        <div class="meme-top">THE 67 CHECK</div>
+        <div class="meme-number">6<span>7</span></div>
+        <p>IF THE DATA IS LIVE,<br><b>THE VIBES ARE LIVE.</b></p>
+        <span class="meme-sticker">CERTIFIED<br>SCIENCE 🧪</span>
+      </article>
+    </section>
+
+    <footer><span>BUILT BY A STUDENT • POWERED BY CURIOSITY</span><span>GITHUB PAGES × SUPABASE</span></footer>
+  </main>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
