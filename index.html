@@ -3,75 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b18">
-  <title>67° Sensor Lab</title>
+  <meta name="theme-color" content="#101820">
+  <title>Smart House | Life Monitor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="glow glow-one"></div><div class="glow glow-two"></div>
-  <main class="shell">
-    <header class="topbar">
-      <a class="brand" href="#"><span class="brand-icon">6<span>7</span></span><span> SENSOR LAB <small>ESP32 • LIVE DATA</small></span></a>
-      <div class="live-pill"><i></i><span id="connection-label">CONNECTING</span></div>
-    </header>
-
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">THE INTERNET OF THINGS, BUT MAKE IT 67</p>
-        <h1>THE ROOM IS<br><span class="gradient-text">GIVING 67.</span></h1>
-        <p class="subtitle">Tiny ESP32. Big sensor energy. Real temperature and humidity, straight from the room.</p>
-        <div class="hero-tags"><span>ESP32 WROOM-32</span><span>WI-FI</span><span>SUPABASE CLOUD</span></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Smart House home"><span class="brand-mark"><span></span><span></span><span></span><span></span></span><span>smart<span class="brand-light">house</span><small>HOME CONTROL</small></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span>Overview</a>
+        <a class="nav-link" href="#rooms"><span class="nav-icon">⌂</span>Rooms</a>
+        <a class="nav-link" href="#climate"><span class="nav-icon">♨</span>Climate</a>
+        <a class="nav-link" href="#security"><span class="nav-icon">◇</span>Security</a>
+        <a class="nav-link" href="#activity"><span class="nav-icon">≋</span>Activity</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="house-card"><div class="house-card-icon">⌂</div><div><strong>My Smart House</strong><small>Prototype system</small></div><span class="tiny-dot"></span></div>
+        <div class="profile"><div class="avatar">SH</div><div><strong>Home owner</strong><small>Local dashboard</small></div><span class="more">···</span></div>
       </div>
-      <div class="mascot-card" aria-label="67 meme graphic">
-        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-        <div class="big-67">6<span>7</span></div>
-        <div class="meme-caption">SIX SEVEN<br><b>WE ARE SO BACK</b></div>
-        <div class="spark spark-a">✳</div><div class="spark spark-b">✦</div>
-      </div>
-    </section>
+    </aside>
 
-    <section class="section-heading">
-      <div><p class="eyebrow">LIVE FROM YOUR ESP32</p><h2>Room status <span>right now</span></h2></div>
-      <div class="updated">LAST UPDATE <strong id="last-updated">WAITING…</strong></div>
-    </section>
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div><div class="breadcrumb">WORKSPACE <span>/</span> OVERVIEW</div><h1>Good morning <span class="wave">✦</span></h1><p class="top-subtitle">Here's what's happening around your home today.</p></div>
+        <div class="top-actions"><span class="demo-badge"><i></i> DEMO MODE</span><button class="icon-button" aria-label="Notifications">♧<b></b></button><div class="date-chip" id="today-date">MON, 23 NOV</div></div>
+      </header>
 
-    <section class="metrics">
-      <article class="metric-card temperature">
-        <div class="metric-top"><span class="metric-icon">🌡️</span><span class="metric-label">TEMPERATURE</span><span class="metric-live">LIVE</span></div>
-        <div class="metric-value"><span id="temperature">--.-</span><small>°C</small></div>
-        <p id="temperature-note">Waiting for the first reading</p>
-        <div class="meter"><span id="temperature-meter"></span></div>
-      </article>
-      <article class="metric-card humidity">
-        <div class="metric-top"><span class="metric-icon">💧</span><span class="metric-label">HUMIDITY</span><span class="metric-live">LIVE</span></div>
-        <div class="metric-value"><span id="humidity">--</span><small>%</small></div>
-        <p id="humidity-note">Waiting for the first reading</p>
-        <div class="meter"><span id="humidity-meter"></span></div>
-      </article>
-    </section>
+      <section class="summary-grid" aria-label="House summary">
+        <article class="summary-card temperature-card"><div class="card-top"><span>INDOOR TEMPERATURE</span><span class="summary-icon warm">☼</span></div><div class="summary-number"><strong id="temperature">27.5</strong><small>°C</small></div><div class="summary-foot"><span class="status-dot good"></span><span>Comfortable</span><span class="muted">Living room</span></div><div class="sparkline temp-line"><svg viewBox="0 0 180 48" preserveAspectRatio="none"><path d="M0 34 C18 30 22 35 38 26 S61 31 76 19 S101 24 115 15 S140 22 154 10 S169 14 180 5" /></svg></div></article>
+        <article class="summary-card humidity-card"><div class="card-top"><span>HUMIDITY</span><span class="summary-icon blue">≈</span></div><div class="summary-number"><strong id="humidity">48.8</strong><small>%</small></div><div class="summary-foot"><span class="status-dot good"></span><span>Normal range</span><span class="muted">Living room</span></div><div class="sparkline humidity-line"><svg viewBox="0 0 180 48" preserveAspectRatio="none"><path d="M0 17 C17 22 25 10 41 18 S64 34 78 24 S100 18 115 26 S137 13 151 20 S167 27 180 12" /></svg></div></article>
+        <article class="summary-card devices-card"><div class="card-top"><span>DEVICES ONLINE</span><span class="summary-icon green">⌁</span></div><div class="summary-number"><strong id="devices-online">4</strong><small>/ 4</small></div><div class="summary-foot"><span class="status-dot good"></span><span>All controllers ready</span></div><div class="device-bars"><i></i><i></i><i></i><i></i></div></article>
+        <article class="summary-card energy-card"><div class="card-top"><span>LIGHTS ON</span><span class="summary-icon amber">✧</span></div><div class="summary-number"><strong id="lights-on">1</strong><small>/ 3</small></div><div class="summary-foot"><span class="status-dot neutral"></span><span id="lights-caption">One room illuminated</span></div><div class="light-progress"><span id="light-progress"></span></div></article>
+      </section>
 
-    <section class="lower-grid">
-      <article class="panel">
-        <div class="panel-heading"><div><p class="eyebrow">THE LATEST TRANSMISSION</p><h3>Sensor feed</h3></div><span class="feed-dot"></span></div>
-        <div id="feed-message" class="feed-message">Waiting for Supabase data…</div>
-        <div class="feed-row"><span>DEVICE</span><strong>ESP32 WROOM-32</strong></div>
-        <div class="feed-row"><span>DATABASE TABLE</span><strong>sensor_data</strong></div>
-        <div class="feed-row"><span>REFRESH RATE</span><strong>5 SECONDS</strong></div>
-      </article>
-      <article class="meme-panel">
-        <div class="meme-top">THE 67 CHECK</div>
-        <div class="meme-number">6<span>7</span></div>
-        <p>IF THE DATA IS LIVE,<br><b>THE VIBES ARE LIVE.</b></p>
-        <span class="meme-sticker">CERTIFIED<br>SCIENCE 🧪</span>
-      </article>
-    </section>
+      <section class="content-grid" id="rooms">
+        <div class="section-block">
+          <div class="section-heading"><div><div class="section-kicker">YOUR SPACE</div><h2>Room controls</h2></div><button class="text-button" id="all-lights">Turn all off <span>↗</span></button></div>
+          <div class="room-grid">
+            <article class="room-card"><div class="room-visual living"><span class="room-emoji">🛋️</span><span class="room-state" id="living-state">LIGHT ON</span></div><div class="room-info"><div><h3>Living room</h3><p>ESP32 · ROOM 01</p></div><button class="toggle on" data-light="living" aria-label="Toggle living room light" aria-pressed="true"><span></span></button></div><div class="room-meta"><span>☼ <b>27.5°C</b></span><span>≈ <b>48.8%</b></span><span class="room-online"><i></i> Online</span></div></article>
+            <article class="room-card"><div class="room-visual bedroom"><span class="room-emoji">🛏️</span><span class="room-state off" id="bedroom-state">LIGHT OFF</span></div><div class="room-info"><div><h3>Bedroom</h3><p>ESP32 · ROOM 02</p></div><button class="toggle" data-light="bedroom" aria-label="Toggle bedroom light" aria-pressed="false"><span></span></button></div><div class="room-meta"><span>☼ <b>26.9°C</b></span><span>≈ <b>52%</b></span><span class="room-online"><i></i> Online</span></div></article>
+            <article class="room-card"><div class="room-visual kitchen"><span class="room-emoji">🍳</span><span class="room-state off" id="kitchen-state">LIGHT OFF</span></div><div class="room-info"><div><h3>Kitchen</h3><p>ESP32 · ROOM 03</p></div><button class="toggle" data-light="kitchen" aria-label="Toggle kitchen light" aria-pressed="false"><span></span></button></div><div class="room-meta"><span>☼ <b>28.1°C</b></span><span>◉ <b>Clear</b></span><span class="room-online"><i></i> Online</span></div></article>
+          </div>
+        </div>
 
-    <footer><span>BUILT BY A STUDENT • POWERED BY CURIOSITY</span><span>GITHUB PAGES × SUPABASE</span></footer>
-  </main>
-  <script src="config.js"></script>
+        <aside class="side-widgets">
+          <article class="widget climate-widget" id="climate"><div class="widget-heading"><div><div class="section-kicker">COMFORT</div><h2>Climate control</h2></div><span class="widget-icon">♨</span></div><div class="fan-display"><div class="fan-ring"><div class="fan-blades">✣</div></div><div><strong id="fan-speed-label">Low</strong><small>FAN SPEED</small></div></div><div class="speed-control" role="group" aria-label="Fan speed"><button data-speed="0">Off</button><button class="selected" data-speed="1">1</button><button data-speed="2">2</button><button data-speed="3">3</button></div><div class="widget-note"><span class="status-dot good"></span><span id="fan-note">Fan running at low speed</span></div></article>
+          <article class="widget door-widget"><div class="widget-heading"><div><div class="section-kicker">ACCESS</div><h2>Front door</h2></div><span class="widget-icon door-icon">⌑</span></div><div class="door-status"><div class="door-graphic" id="door-graphic"><span>▯</span></div><div><strong id="door-state">Closed</strong><small>DOOR STATUS · ESP32 04</small></div></div><div class="door-actions"><button class="secondary-button" id="door-open">Open door</button><button class="primary-button" id="door-close" disabled>Close</button></div></article>
+        </aside>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="widget security-widget" id="security"><div class="widget-heading"><div><div class="section-kicker">PEACE OF MIND</div><h2>Security sensors</h2></div><span class="security-ok"><i></i> ALL CLEAR</span></div><div class="sensor-list"><div class="sensor-row"><span class="sensor-symbol">◉</span><div><strong>Motion sensor</strong><small>Living room</small></div><span class="sensor-value"><i></i> No motion</span></div><div class="sensor-row"><span class="sensor-symbol">⌑</span><div><strong>Front door</strong><small>Main entrance</small></div><span class="sensor-value"><i></i> Closed</span></div><div class="sensor-row"><span class="sensor-symbol">▤</span><div><strong>Bedroom window</strong><small>Bedroom</small></div><span class="sensor-value"><i></i> Closed</span></div></div></article>
+        <article class="widget activity-widget" id="activity"><div class="widget-heading"><div><div class="section-kicker">WHAT'S HAPPENING</div><h2>Recent activity</h2></div><button class="text-button" id="clear-activity">Clear <span>×</span></button></div><div class="activity-list" id="activity-list"><div class="activity-row"><span class="activity-icon light-activity">✧</span><div><strong>Living room light switched on</strong><small>Manual control · Demo</small></div><time>Now</time></div><div class="activity-row"><span class="activity-icon climate-activity">♨</span><div><strong>Fan set to low speed</strong><small>Climate control · Demo</small></div><time>2 min</time></div><div class="activity-row"><span class="activity-icon sensor-activity">⌁</span><div><strong>Temperature updated to 27.5°C</strong><small>Living room sensor · Demo</small></div><time>5 min</time></div></div></article>
+      </section>
+      <footer><span>SMART HOUSE <b>•</b> PROTOTYPE DASHBOARD</span><span>ESP32 × WI-FI × SUPABASE <b>•</b> <span id="footer-clock">--:--</span></span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>
