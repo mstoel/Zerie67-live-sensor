@@ -1,69 +1,136 @@
-const REFRESH_MS = 5000;
-const TABLE = "sensor_data";
+// Smart House dashboard — interactive prototype.
+// Controls currently update this browser only. Supabase/ESP32 control will be connected in a later stage.
 const $ = (id) => document.getElementById(id);
+const lights = { living: true, bedroom: false, kitchen: false };
+let fanSpeed = 1;
+let doorOpen = false;
+let toastTimer;
 
-function setConnection(state, label) {
-  const pill = document.querySelector(".live-pill");
-  pill.classList.remove("connected", "error");
-  if (state) pill.classList.add(state);
-  $("connection-label").textContent = label;
+function notify(message) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
 }
 
-function showSetupMessage(message) {
-  $("feed-message").textContent = message;
-}
-
-function renderReading(row) {
-  const temp = Number(row.temperature);
-  const humidity = Number(row.humidity);
-  if (!Number.isFinite(temp) || !Number.isFinite(humidity)) {
-    throw new Error("The latest row needs numeric temperature and humidity values.");
-  }
-  $("temperature").textContent = temp.toFixed(1);
-  $("humidity").textContent = humidity.toFixed(0);
-  $("temperature-note").textContent = temp >= 30 ? "It's getting warm in here." : temp <= 20 ? "A little cool today." : "Temperature looks comfortable.";
-  $("humidity-note").textContent = humidity >= 70 ? "Air is feeling humid." : humidity <= 35 ? "The air is quite dry." : "Humidity is in a moderate range.";
-  $("temperature-meter").style.width = Math.max(0, Math.min(100, temp / 50 * 100)) + "%";
-  $("humidity-meter").style.width = Math.max(0, Math.min(100, humidity)) + "%";
-  const date = row.created_at ? new Date(row.created_at) : new Date();
-  $("last-updated").textContent = date.toLocaleTimeString();
-  $("feed-message").textContent = "New reading received. The ESP32 data is safely arriving in the sensor_data table.";
-}
-
-async function loadLatestReading() {
-  const url = window.SUPABASE_URL;
-  const key = window.SUPABASE_ANON_KEY;
-  if (!url || url.includes("PASTE_") || !key || key.includes("PASTE_")) {
-    setConnection("", "SETUP NEEDED");
-    showSetupMessage("Next step: add the Supabase Project URL and anon/public key in config.js. Keep secret keys out of this website.");
-    return;
-  }
-
-  try {
-    const endpoint = url.replace(/\/$/, "") +
-      "/rest/v1/" + TABLE +
-      "?select=temperature,humidity,created_at&order=created_at.desc&limit=1";
-    const response = await fetch(endpoint, {
-      headers: { apikey: key, Authorization: "Bearer " + key }
-    });
-    if (!response.ok) {
-      const detail = await response.text();
-      throw new Error("Supabase " + response.status + ": " + detail.slice(0, 180));
-    }
-    const rows = await response.json();
-    if (!rows.length) {
-      setConnection("", "WAITING FOR ESP32");
-      showSetupMessage("Supabase is connected, but no readings have arrived yet. Turn on the ESP32 to send the first temperature and humidity values.");
-      return;
-    }
-    renderReading(rows[0]);
-    setConnection("connected", "LIVE");
-  } catch (error) {
-    console.error(error);
-    setConnection("error", "CHECK SETUP");
-    showSetupMessage(error.message + " Check that sensor_data exists, the column names match, and the table allows SELECT for the anon role.");
+function addActivity(title, detail) {
+  const row = document.createElement("div");
+  row.className = "activity-row";
+  const icon = document.createElement("span");
+  icon.className = "activity-icon light-activity";
+  icon.textContent = "✧";
+  const content = document.createElement("div");
+  const strong = document.createElement("strong");
+  strong.textContent = title;
+  const small = document.createElement("small");
+  small.textContent = detail + " · Demo";
+  content.append(strong, small);
+  const time = document.createElement("time");
+  time.textContent = "Now";
+  row.append(icon, content, time);
+  $("activity-list").prepend(row);
+  while ($("activity-list").children.length > 6) {
+    $("activity-list").lastElementChild.remove();
   }
 }
 
-loadLatestReading();
-setInterval(loadLatestReading, REFRESH_MS);
+function renderLights() {
+  let count = 0;
+  Object.entries(lights).forEach(([room, isOn]) => {
+    const button = document.querySelector('[data-light="' + room + '"]');
+    const label = $(room + "-state");
+    button.classList.toggle("on", isOn);
+    button.setAttribute("aria-pressed", String(isOn));
+    label.textContent = isOn ? "LIGHT ON" : "LIGHT OFF";
+    label.classList.toggle("off", !isOn);
+    count += isOn ? 1 : 0;
+  });
+  $("lights-on").textContent = count;
+  $("lights-caption").textContent = count === 0 ? "All rooms are dark" : count === 1 ? "One room illuminated" : count + " rooms illuminated";
+  $("light-progress").style.width = (count / 3 * 100) + "%";
+}
+
+document.querySelectorAll("[data-light]").forEach(button => {
+  button.addEventListener("click", () => {
+    const room = button.dataset.light;
+    lights[room] = !lights[room];
+    renderLights();
+    const roomName = room.charAt(0).toUpperCase() + room.slice(1);
+    const action = lights[room] ? "switched on" : "switched off";
+    addActivity(roomName + " light " + action, "Manual control");
+    notify(roomName + " light " + action + " (demo only)");
+  });
+});
+
+$("all-lights").addEventListener("click", () => {
+  Object.keys(lights).forEach(room => lights[room] = false);
+  renderLights();
+  addActivity("All room lights switched off", "Group control");
+  notify("All lights switched off (demo only)");
+});
+
+function renderFan() {
+  const names = ["Off", "Low", "Medium", "High"];
+  $("fan-speed-label").textContent = names[fanSpeed];
+  $("fan-note").textContent = fanSpeed === 0 ? "Fan is switched off" : "Fan running at " + names[fanSpeed].toLowerCase() + " speed";
+  document.querySelectorAll("[data-speed]").forEach(button => {
+    const selected = Number(button.dataset.speed) === fanSpeed;
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  document.querySelector(".fan-blades").style.opacity = fanSpeed === 0 ? ".35" : "1";
+  document.querySelector(".fan-blades").style.transform = fanSpeed === 0 ? "none" : "rotate(" + (fanSpeed * 35) + "deg)";
+}
+
+document.querySelectorAll("[data-speed]").forEach(button => {
+  button.addEventListener("click", () => {
+    fanSpeed = Number(button.dataset.speed);
+    renderFan();
+    const name = ["Off", "Low", "Medium", "High"][fanSpeed];
+    addActivity("Fan set to " + name.toLowerCase() + (fanSpeed ? " speed" : ""), "Climate control");
+    notify("Fan: " + name + " (demo only)");
+  });
+});
+
+function renderDoor() {
+  $("door-state").textContent = doorOpen ? "Open" : "Closed";
+  $("door-graphic").classList.toggle("open", doorOpen);
+  $("door-open").disabled = doorOpen;
+  $("door-close").disabled = !doorOpen;
+}
+$("door-open").addEventListener("click", () => {
+  doorOpen = true;
+  renderDoor();
+  addActivity("Front door opened", "Door control");
+  notify("Door opened (demo only)");
+});
+$("door-close").addEventListener("click", () => {
+  doorOpen = false;
+  renderDoor();
+  addActivity("Front door closed", "Door control");
+  notify("Door closed (demo only)");
+});
+
+$("clear-activity").addEventListener("click", () => {
+  $("activity-list").replaceChildren();
+  notify("Activity list cleared");
+});
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", () => {
+    document.querySelectorAll(".nav-link").forEach(item => item.classList.remove("active"));
+    link.classList.add("active");
+  });
+});
+
+function updateClock() {
+  const now = new Date();
+  $("today-date").textContent = now.toLocaleDateString("en-US", { weekday: "short", day: "2-digit", month: "short" }).toUpperCase();
+  $("footer-clock").textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+renderLights();
+renderFan();
+renderDoor();
+updateClock();
+setInterval(updateClock, 30000);
